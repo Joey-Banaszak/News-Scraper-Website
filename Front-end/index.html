@@ -28,51 +28,40 @@
     <p>Find news stories that are relevant to you!</p>
     <form method="GET" action="/search.html">
       <div class="input-group">
-        <input type="text" name="q" id="search-bar" class="form-control" placeholder="Search"></input>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">Search</button>
-              <!-- New button to show previous searches -->
-              <button id="show-prev-searches" class="btn btn-info" type="button">Show Previous Searches</button>
-          </span>
-        <ul id="previous-searches" style="display: none; border: 1px solid #ccc; background-color: #fff; position: absolute;"></ul>
+  <input type="text" name="q" id="search-box" class="form-control" placeholder="Search"></input>
+  <span class="input-group-btn">
+    <button class="btn btn-default" type="submit">Search</button>
+    <button class="btn btn-secondary" id="prev-search-btn" type="button">Previous Searches</button>
+  </span>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Handle Previous Searches button click
+    $('#prev-search-btn').click(function() {
+      $.ajax({
+        url: '/get_last_search',  // Route to get the last search
+        method: 'GET',
+        success: function(response) {
+          if (response.last_search) {
+            // Set the search box with the last search term and submit the form
+            $('#search-box').val(response.last_search);
+            $('form').submit();
+          } else {
+            alert("No previous searches found.");
+          }
+        },
+        error: function() {
+          alert("Error retrieving previous searches.");
+        }
+      });
+    });
+  });
+</script>
       </div>
     </form>
   </div>
  </div>
-<script>
-  $(document).ready(function(){
-      $('#show-prev-searches').on('click', function(){
-          // Toggle the display of the previous searches list
-          let searchList = $('#previous-searches');
-          if(searchList.is(':visible')){
-              searchList.hide();
-          } else {
-              $.ajax({
-                  url: '/previous_searches',
-                  method: 'GET',
-                  success: function(data){
-                      if(data.length > 0){
-                          searchList.empty();  // Clear previous entries
-                          data.forEach(function(searchTerm){
-                              searchList.append('<li>' + searchTerm + '</li>');
-                          });
-                          searchList.show();
-                      } else {
-                          searchList.append('<li>No previous searches found.</li>');
-                          searchList.show();
-                      }
-                  }
-              });
-          }
-      });
 
-      // Hide the list when clicking outside the button and list
-      $(document).on('click', function(event) {
-          if (!$(event.target).closest('#show-prev-searches, #previous-searches').length) {
-              $('#previous-searches').hide();
-          }
-      });
-  });
-  </script>
 </body>
 </html>
