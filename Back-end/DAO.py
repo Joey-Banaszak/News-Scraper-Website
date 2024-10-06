@@ -1,7 +1,10 @@
 from connection import Connection 
 import time 
+from flask import Flask, jsonify
 
-# define the class Pilot
+app = Flask(__name__)
+        
+# define the class
 class Prev_search:
 
     
@@ -54,5 +57,17 @@ class Prev_search:
                 return True
             else:
                 return False
+
+    @app.route('/get_last_search', methods=['GET'])
+    def get_last_search():
+        # Fetch the last search from the database
+        conn = Connection(config_dic)
+        sql = "SELECT search FROM Prev_search ORDER BY time_searched DESC LIMIT 1"
+        result = conn.run_select(sql)
+    
+        if result:
+            return jsonify({'last_search': result[0][0]})
+        else:
+            return jsonify({'last_search': None})
         
         
