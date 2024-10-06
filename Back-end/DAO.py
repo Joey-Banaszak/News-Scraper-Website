@@ -27,36 +27,18 @@ class Prev_search:
     def set_time( self, time = time.time() ):
         self.__search = time
 
-    def save( self ):
-
-        # create a connection to the db 
-        conn = Connection(self.__config)
-
-        # select prev searches
-        sql = "select * from Prev_search"
-
-        result = list(conn.run_select(sql))
-
-        for da_result in result: 
-
-            # check if the result has already been searched 
-            if da_result.__time == self.__time:
-
-                # if so update the time
-                da_result.set_time(self)
-
-            # otherwise, 
-            else: 
-
-                # add it to the db 
-                 sql = "insert into Prev_search(search, time_searched) values (%s, %s)"
-                 values = [ str( self.get_search() ), str( self.get_time() ) ]
-
-            result = conn.commit_changes(sql, values)
-            if result == 1:
-                return True
-            else:
-                return False
+    def save(self):
+    conn = Connection(self.__config)
+    
+    # Insert the new search term into the database
+    sql = "INSERT INTO Prev_search (search, time_searched) VALUES (%s, %s)"
+    values = [self.get_search(), self.get_time()]
+    
+    conn.open_conn()
+    cursor = conn.get_cursor()
+    cursor.execute(sql, values)
+    conn.commit_changes()
+    conn.close_conn()
 
     @app.route('/get_last_search', methods=['GET'])
     def get_last_search():
