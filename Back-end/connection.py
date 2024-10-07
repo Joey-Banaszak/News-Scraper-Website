@@ -1,12 +1,13 @@
 import mysql.connector
+from config import Config
 
 
 class Connection:
 
-    def __init__(self, config_dic):
+    def __init__(self):
         self.__mydb = None
         self.__cursor = None
-        self.__config = config_dic
+        self.__config = Config.dbinfo()
 
     def open_conn(self):
         self.__mydb = mysql.connector.connect(
