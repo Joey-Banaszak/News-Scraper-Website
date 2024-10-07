@@ -28,36 +28,10 @@
     <p>Find news stories that are relevant to you!</p>
     <form method="GET" action="/search.html">
       <div class="input-group">
-  <input type="text" name="q" id="search-box" class="form-control" placeholder="Search"></input>
-  <span class="input-group-btn">
-    <button class="btn btn-default" type="submit">Search</button>
-    <button class="btn btn-secondary" id="prev-search-btn" type="button">Previous Searches</button>
-  </span>
-</div>
-
-<script>
-  $(document).ready(function() {
-    // Handle Previous Searches button click
-    $('#prev-search-btn').click(function() {
-      $.ajax({
-        url: '/get_last_search',  // Route to get the last search
-        method: 'GET',
-        success: function(response) {
-          if (response.last_search) {
-            // Set the search box with the last search term and submit the form
-            $('#search-box').val(response.last_search);
-            $('form').submit();
-          } else {
-            alert("No previous searches found.");
-          }
-        },
-        error: function() {
-          alert("Error retrieving previous searches.");
-        }
-      });
-    });
-  });
-</script>
+        <input type="text" name="q" class="form-control" placeholder="Search"></input>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">Search</button>
+        </span>
       </div>
     </form>
   </div>
