@@ -20,6 +20,7 @@
       </ul>
     </div>
   </nav>
+  
   <div class="container-main">
     <div class="container-search">
       <h1>Welcome to the News Scraper</h1>
@@ -35,46 +36,51 @@
       </form>
 
       <!-- previous searches -->
-      <ul id="previous-searches" class="dropdown-menu" style="display:none;">
-      </ul>
+      <ul id="previous-searches" class="dropdown-menu"></ul>
     </div>
   </div>
 
+  <!-- create event handler -->>
   <script>
     $(document).ready(function() {
-      // wait for button activation
-      $('#prev-search-btn').click(function()
-       {
-        $.ajax(
-        {
-          //ask the app.py to run the previous_searches route
-          url: '/get_previous_searches',
-          method: 'GET',
-          //if data is found call the script
-          success: function(data) 
-          {
-            let searchList = $('#previous-searches');
-            // clear it from the page on loading
-            searchList.empty();
-            if (data.length > 0) 
-            {
-            // display each search iterativley
-              data.forEach(function(searchTerm) 
-              {
-                searchList.append('<li><a href="#">' + searchTerm + '</a></li>');
-              });
-              searchList.show();
-            } 
-            // otherwise assume no searches
-            else 
-            {
-              searchList.append('<li>No previous searches found.</li>');
-              searchList.show();
-            }
-          },
-        });
-       });
+      // Initialize the event-driven handlers
+      initEventHandlers();
     });
+
+    function initEventHandlers() {
+      // Handler for Previous Searches button
+      $('#prev-search-btn').on('click', function() {
+        fetchPreviousSearches();
+      });
+
+    }
+
+    function fetchPreviousSearches() {
+      // AJAX request to fetch previous searches
+      $.ajax({
+        url: '/get_previous_searches',
+        method: 'GET',
+        success: handlePreviousSearchesResponse,
+        error: function() {
+          console.error("Error fetching previous searches.");
+        }
+      });
+    }
+
+    // create event listener/ handler 
+    function handlePreviousSearchesResponse(data) {
+      let searchList = $('#previous-searches');
+      searchList.empty(); 
+      
+      if (data.length > 0) {
+        data.forEach(function(searchTerm) {
+          searchList.append('<li><a href="#">' + searchTerm + '</a></li>');
+        });
+      } else {
+        searchList.append('<li>No previous searches found.</li>');
+      }
+      searchList.show(); 
+    }
   </script>
 </body>
 </html>
